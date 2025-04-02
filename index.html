@@ -193,8 +193,8 @@
             </div>
             
             <div class="filter-item">
-                <label for="hasShortHand">Has SHO / WHO</label>
-                <select id="hasShortHand">
+                <label for="hasShoWho">Has SHO / WHO</label>
+                <select id="hasShoWho">
                     <option value="">Any</option>
                     <option value="YES">Yes</option>
                     <option value="NO">No</option>
@@ -275,7 +275,7 @@
                     <th data-sort="roundCount">Round Count</th>
                     <th data-sort="mandatoryReload">Mandatory Reload</th>
                     <th data-sort="standAndDeliver">Stand and Deliver</th>
-                    <th data-sort="hasShortHand">SHO/WHO</th>
+                    <th data-sort="hasShoWho">SHO/WHO</th>
                     <th data-sort="hasBarricade">Barricade</th>
                     <th data-sort="hasSteel">Steel</th>
                     <th data-sort="scoringType">Scoring</th>
@@ -346,7 +346,7 @@
                 const mandatoryReload = document.getElementById('mandatoryReload').value;
                 const standAndDeliver = document.getElementById('standAndDeliver').value;
                 const boxToBox = document.getElementById('boxToBox').value;
-                const hasShortHand = document.getElementById('hasShortHand').value;
+                const hasShoWho = document.getElementById('hasShoWho').value;
                 const upRangeStart = document.getElementById('upRangeStart').value;
                 const seatedStart = document.getElementById('seatedStart').value;
                 const hasBarricade = document.getElementById('hasBarricade').value;
@@ -364,7 +364,7 @@
                     if (mandatoryReload && stage.mandatoryReload !== mandatoryReload) return false;
                     if (standAndDeliver && stage.standAndDeliver !== standAndDeliver) return false;
                     if (boxToBox && stage.boxToBox !== boxToBox) return false;
-                    if (hasShortHand && stage.hasShortHand !== hasShortHand) return false;
+                    if (hasShoWho && stage.hasShoWho !== hasShoWho) return false;
                     if (upRangeStart && stage.upRangeStart !== upRangeStart) return false;
                     if (seatedStart && stage.seatedStart !== seatedStart) return false;
                     if (hasBarricade && stage.hasBarricade !== hasBarricade) return false;
@@ -445,7 +445,7 @@
                     addCell(row, stage.roundCount);
                     addCell(row, stage.mandatoryReload);
                     addCell(row, stage.standAndDeliver);
-                    addCell(row, stage.hasShortHand);
+                    addCell(row, stage.hasShoWho);
                     addCell(row, stage.hasBarricade);
                     addCell(row, stage.hasSteel);
                     addCell(row, stage.scoringType);
