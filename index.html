@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classifier Library</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .filters {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .filter-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .filter-item {
+            min-width: 150px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        select, input {
+            width: 100%;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background: #388E3C;
+        }
+        .button-group {
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            position: sticky;
+            top: 0;
+            cursor: pointer;
+        }
+        th:hover {
+            background-color: #e6e6e6;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .no-results {
+            text-align: center;
+            padding: 20px;
+            font-style: italic;
+            color: #666;
+        }
+        .table-container {
+            max-height: 600px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .highlighted {
+            background-color: #ffeb3b !important;
+        }
+    </style>
+</head>
+<body>
+    <h1>Classifier Library</h1>
+    
+    <div class="filters">
+        <h2>Filters</h2>
+        
+        <div class="filter-group">
+            <div class="filter-item">
+                <label for="indoor">Indoor</label>
+                <select id="indoor">
+                    <option value="">Any</option>
+                    <option value="YES">Yes</option>
+                    <option value="NO">No</option>
+                </select>
+            </div>
+            
+            <div class="filter-item">
+                <label for="indoorNoSteel">Indoor & No Steel</label>
+                <select id="indoorNoSteel">
+                    <option value="">Any</option>
+                    <option value="YES">Yes</option>
+                    <option value="NO">No</option>
+                </select>
+            </div>
+            
+            <div class="filter-item">
+                <label for="backBermOnly">Back Berm Only</label>
+                <select id="backBermOnly">
+                    <option value="">Any</option>
+                    <option value="YES">Yes</option>
+                    <option value="NO">No</option>
+                </select>
+            </div>
+            
+            <div class="filter-item">
+                <label for="tenRoundsOrLess">10 Rounds or Less</label>
+                <select id="tenRoundsOrLess">
+                    <option value="">Any</option>
+                    <option value="YES">Yes</option>
+                    <option value="NO">No</option>
+                </select>
+            </div>
+            
+            <div class="filter-item">
+                <label for="banState">Ban State</label>
+                <select id="banState">
+                    <option value="">Any</option>
+                    <option value="YES">Yes</option>
+                    <option value="NO">No</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="filter-group">
+            <div class="filter-item">
+                <label for="roundCount">Round Count</label>
+                <select id="roundCount">
+                    <option value="">Any</option>
+                    <option value="<10">Less than 10</option>
+                    <option value="10-15">10-15</option>
+                    <option value="16-20">16-20</option>
+                    <option value=">20">More than 20</option>
+                </select>
+            </div>
+            
+            <div class="filter-item">
+                <label for="mandatoryReload">Mandatory Reload</label>
+                <select id="mandatoryReload">
+                    <option value="">Any</option>
+                    <option value="YES">Yes</option>
+                    <option value="NO">No</option>
+                </select>
+            </div>
+            
+            <div class="filter-item">
+                <label for="standAndDeliver">Stand and Deliver</label>
+                <select id="standAndDeliver">
+                    <option value="">Any</option>
+                    <option value="YES">Yes</option>
+                    <option value="NO">No</option>
+                </select>
+            </div>
+            
+            <div class="filter-item">
+                <label for="boxToBox">Box to Box</label>
+                <select id="boxToBox">
+                    <option value="">Any</option>
+                    <option value="YES">Yes</option>
+                    <option value="NO">No</option>
+                </select>
+            </div>
+            
+            <div class="filter-item">
+                <label for="hasShortHand">Has SHO / WHO</label>
+                <select id="hasShortHand">
+                    <option value="">Any</option>
+                    <option value="YES">Yes</option>
+                    <option value="NO">No</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="filter-group">
+            <div class="filter-item">
+                <label for="upRangeStart">Up Range Start</label>
+                <select id="upRangeStart">
+                    <option value="">Any</option>
+                    <option value="YES">Yes</option>
+                    <option value="NO">No</option>
+                </select>
+            </div>
+            
+            <div class="filter-item">
+                <label for="seatedStart">Seated Start</label>
+                <select id="seatedStart">
+                    <option value="">Any</option>
+                    <option value="YES">Yes</option>
+                    <option value="NO">No</option>
+                </select>
+            </div>
+            
+            <div class="filter-item">
+                <label for="hasBarricade">Has Barricade</label>
+                <select id="hasBarricade">
+                    <option value="">Any</option>
+                    <option value="YES">Yes</option>
+                    <option value="NO">No</option>
+                </select>
+            </div>
+            
+            <div class="filter-item">
+                <label for="hasSteel">Has Steel</label>
+                <select id="hasSteel">
+                    <option value="">Any</option>
+                    <option value="YES">Yes</option>
+                    <option value="NO">No</option>
+                </select>
+            </div>
+            
+            <div class="filter-item">
+                <label for="scoringType">Scoring Type</label>
+                <select id="scoringType">
+                    <option value="">Any</option>
+                    <option value="COMSTOCK">Comstock</option>
+                    <option value="VIRGINIA">Virginia</option>
+                    <!-- Add other scoring types as needed -->
+                </select>
+            </div>
+        </div>
+        
+        <div class="filter-group">
+            <div class="filter-item">
+                <label for="stageSearch">Search by Name/ID</label>
+                <input type="text" id="stageSearch" placeholder="Stage name or ID...">
+            </div>
+        </div>
+        
+        <div class="button-group">
+            <button id="applyFilters">Apply Filters</button>
+            <button id="resetFilters">Reset Filters</button>
+        </div>
+    </div>
+    
+    <div class="table-container">
+        <table id="classifierTable">
+            <thead>
+                <tr>
+                    <th data-sort="stageName">Stage Name</th>
+                    <th data-sort="stageIdentifier">Stage ID</th>
+                    <th data-sort="indoor">Indoor</th>
+                    <th data-sort="indoorNoSteel">Indoor No Steel</th>
+                    <th data-sort="banState">Ban State</th>
+                    <th data-sort="roundCount">Round Count</th>
+                    <th data-sort="mandatoryReload">Mandatory Reload</th>
+                    <th data-sort="standAndDeliver">Stand and Deliver</th>
+                    <th data-sort="hasShortHand">SHO/WHO</th>
+                    <th data-sort="hasBarricade">Barricade</th>
+                    <th data-sort="hasSteel">Steel</th>
+                    <th data-sort="scoringType">Scoring</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Table rows will be populated by JavaScript -->
+            </tbody>
+        </table>
+    </div>
+
+    <script src="classifiers.js"></script>
+    <script>
+        // Core functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const tableBody = document.querySelector('#classifierTable tbody');
+            const applyFiltersBtn = document.getElementById('applyFilters');
+            const resetFiltersBtn = document.getElementById('resetFilters');
+            const tableHeaders = document.querySelectorAll('th[data-sort]');
+            
+            let filteredData = [...classifierData];
+            let sortConfig = {
+                column: 'stageName',
+                direction: 'asc'
+            };
+            
+            // Initial render
+            renderTable(filteredData);
+            
+            // Apply filters button click
+            applyFiltersBtn.addEventListener('click', function() {
+                applyFilters();
+            });
+            
+            // Reset filters button click
+            resetFiltersBtn.addEventListener('click', function() {
+                document.querySelectorAll('select, input').forEach(el => {
+                    el.value = '';
+                });
+                filteredData = [...classifierData];
+                renderTable(filteredData);
+            });
+            
+            // Table header click for sorting
+            tableHeaders.forEach(header => {
+                header.addEventListener('click', function() {
+                    const column = this.dataset.sort;
+                    
+                    if (sortConfig.column === column) {
+                        sortConfig.direction = sortConfig.direction === 'asc' ? 'desc' : 'asc';
+                    } else {
+                        sortConfig.column = column;
+                        sortConfig.direction = 'asc';
+                    }
+                    
+                    sortTable(column, sortConfig.direction);
+                });
+            });
+            
+            // Apply filters function
+            function applyFilters() {
+                const indoor = document.getElementById('indoor').value;
+                const indoorNoSteel = document.getElementById('indoorNoSteel').value;
+                const backBermOnly = document.getElementById('backBermOnly').value;
+                const tenRoundsOrLess = document.getElementById('tenRoundsOrLess').value;
+                const banState = document.getElementById('banState').value;
+                const roundCountFilter = document.getElementById('roundCount').value;
+                const mandatoryReload = document.getElementById('mandatoryReload').value;
+                const standAndDeliver = document.getElementById('standAndDeliver').value;
+                const boxToBox = document.getElementById('boxToBox').value;
+                const hasShortHand = document.getElementById('hasShortHand').value;
+                const upRangeStart = document.getElementById('upRangeStart').value;
+                const seatedStart = document.getElementById('seatedStart').value;
+                const hasBarricade = document.getElementById('hasBarricade').value;
+                const hasSteel = document.getElementById('hasSteel').value;
+                const scoringType = document.getElementById('scoringType').value;
+                const search = document.getElementById('stageSearch').value.toLowerCase();
+                
+                filteredData = classifierData.filter(stage => {
+                    // Filter by boolean values
+                    if (indoor && stage.indoor !== indoor) return false;
+                    if (indoorNoSteel && stage.indoorNoSteel !== indoorNoSteel) return false;
+                    if (backBermOnly && stage.backBermOnly !== backBermOnly) return false;
+                    if (tenRoundsOrLess && stage.tenRoundsOrLess !== tenRoundsOrLess) return false;
+                    if (banState && stage.banState !== banState) return false;
+                    if (mandatoryReload && stage.mandatoryReload !== mandatoryReload) return false;
+                    if (standAndDeliver && stage.standAndDeliver !== standAndDeliver) return false;
+                    if (boxToBox && stage.boxToBox !== boxToBox) return false;
+                    if (hasShortHand && stage.hasShortHand !== hasShortHand) return false;
+                    if (upRangeStart && stage.upRangeStart !== upRangeStart) return false;
+                    if (seatedStart && stage.seatedStart !== seatedStart) return false;
+                    if (hasBarricade && stage.hasBarricade !== hasBarricade) return false;
+                    if (hasSteel && stage.hasSteel !== hasSteel) return false;
+                    if (scoringType && stage.scoringType !== scoringType) return false;
+                    
+                    // Filter by round count
+                    if (roundCountFilter) {
+                        const count = stage.roundCount;
+                        if (roundCountFilter === '<10' && count >= 10) return false;
+                        if (roundCountFilter === '10-15' && (count < 10 || count > 15)) return false;
+                        if (roundCountFilter === '16-20' && (count < 16 || count > 20)) return false;
+                        if (roundCountFilter === '>20' && count <= 20) return false;
+                    }
+                    
+                    // Filter by search text
+                    if (search && 
+                        !stage.stageName.toLowerCase().includes(search) && 
+                        !stage.stageIdentifier.toLowerCase().includes(search)) {
+                        return false;
+                    }
+                    
+                    return true;
+                });
+                
+                // Re-sort and render the filtered data
+                sortTable(sortConfig.column, sortConfig.direction);
+            }
+            
+            // Sorting function
+            function sortTable(column, direction) {
+                filteredData.sort((a, b) => {
+                    let valueA = a[column];
+                    let valueB = b[column];
+                    
+                    // For string comparison
+                    if (typeof valueA === 'string') {
+                        valueA = valueA.toLowerCase();
+                        valueB = valueB.toLowerCase();
+                    }
+                    
+                    if (valueA < valueB) {
+                        return direction === 'asc' ? -1 : 1;
+                    }
+                    if (valueA > valueB) {
+                        return direction === 'asc' ? 1 : -1;
+                    }
+                    return 0;
+                });
+                
+                renderTable(filteredData);
+            }
+            
+            // Render table function
+            function renderTable(data) {
+                tableBody.innerHTML = '';
+                
+                if (data.length === 0) {
+                    const row = document.createElement('tr');
+                    const cell = document.createElement('td');
+                    cell.colSpan = 12;
+                    cell.className = 'no-results';
+                    cell.textContent = 'No matching stages found';
+                    row.appendChild(cell);
+                    tableBody.appendChild(row);
+                    return;
+                }
+                
+                data.forEach(stage => {
+                    const row = document.createElement('tr');
+                    
+                    // Add cells
+                    addCell(row, stage.stageName);
+                    addCell(row, stage.stageIdentifier);
+                    addCell(row, stage.indoor);
+                    addCell(row, stage.indoorNoSteel);
+                    addCell(row, stage.banState);
+                    addCell(row, stage.roundCount);
+                    addCell(row, stage.mandatoryReload);
+                    addCell(row, stage.standAndDeliver);
+                    addCell(row, stage.hasShortHand);
+                    addCell(row, stage.hasBarricade);
+                    addCell(row, stage.hasSteel);
+                    addCell(row, stage.scoringType);
+                    
+                    tableBody.appendChild(row);
+                });
+            }
+            
+            function addCell(row, content) {
+                const cell = document.createElement('td');
+                cell.textContent = content;
+                row.appendChild(cell);
+                return cell;
+            }
+            
+            // Handle search input
+            document.getElementById('stageSearch').addEventListener('keyup', function(event) {
+                if (event.key === 'Enter') {
+                    applyFilters();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
