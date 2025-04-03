@@ -36,6 +36,10 @@
             --table-header-color: #f8f9fa;
         }
         
+        html, body {
+            transition: color 0.3s ease, background-color 0.3s ease;
+        }
+        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
@@ -44,7 +48,6 @@
             margin: 0 auto;
             padding: 20px;
             background-color: var(--bg-color);
-            transition: background-color 0.3s ease;
         }
         
         h1, h2, h3 {
@@ -491,7 +494,7 @@
                         </select>
                     </div>
                     <div class="filter-item">
-                        <label for="stageStyle">Stage Style (Movement)</label>
+                        <label for="stageStyle">Stage Style (Tactical)</label>
                         <select id="stageStyle">
                             <option value="">Any</option>
                             <option value="YES">Yes</option>
