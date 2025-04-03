@@ -14,16 +14,37 @@
             --success-color: #40916c;
             --border-color: #dee2e6;
             --hover-color: #f0f5ff;
+            --text-color: #333;
+            --bg-color: #fcfcfc;
+            --table-alt-row: #f9f9f9;
+            --table-header-bg: #294c85;
+            --table-header-color: white;
+        }
+        
+        [data-theme="dark"] {
+            --primary-color: #4a78c5;
+            --secondary-color: #ff5a67;
+            --light-gray: #2a2e32;
+            --medium-gray: #343a40;
+            --dark-gray: #e9ecef;
+            --border-color: #495057;
+            --hover-color: #253549;
+            --text-color: #e9ecef;
+            --bg-color: #212529;
+            --table-alt-row: #2c3136;
+            --table-header-bg: #394c6a;
+            --table-header-color: #f8f9fa;
         }
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
-            color: #333;
+            color: var(--text-color);
             max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
-            background-color: #fcfcfc;
+            background-color: var(--bg-color);
+            transition: background-color 0.3s ease;
         }
         
         h1, h2, h3 {
@@ -47,6 +68,22 @@
         .header-container h1 {
             margin: 0;
             border: none;
+        }
+        
+        .theme-toggle {
+            background: var(--medium-gray);
+            border: none;
+            border-radius: 20px;
+            padding: 5px 10px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--text-color);
+        }
+        
+        .theme-toggle i {
+            margin-right: 6px;
         }
         
         .filters {
@@ -81,7 +118,7 @@
         
         .filter-content {
             padding: 15px;
-            background-color: white;
+            background-color: var(--bg-color);
             display: none;
         }
         
@@ -220,8 +257,8 @@
         }
         
         th {
-            background-color: var(--primary-color);
-            color: white;
+            background-color: var(--table-header-bg);
+            color: var(--table-header-color);
             position: sticky;
             top: 0;
             cursor: pointer;
@@ -233,7 +270,7 @@
         }
         
         tr:nth-child(even) {
-            background-color: var(--light-gray);
+            background-color: var(--table-alt-row);
         }
         
         tr:hover {
@@ -302,6 +339,9 @@
 <body>
     <div class="header-container">
         <h1>USPSA Classifier Library</h1>
+        <button id="theme-toggle" class="theme-toggle">
+            <i id="theme-icon">🌙</i> Dark Mode
+        </button>
     </div>
     
     <div class="filters">
@@ -392,25 +432,26 @@
                 </div>
                 <div class="filter-group">
                     <div class="filter-item">
-                        <label for="width">Width (feet)
-                            <span class="tooltip">ⓘ<span class="tooltip-text">Minimum stage width needed</span></span>
+                        <label for="width">Width (ft)
+                            <span class="tooltip">ⓘ<span class="tooltip-text">Minimum stage width needed in feet</span></span>
                         </label>
                         <select id="width">
                             <option value="">Any</option>
-                            <option value="<15">Less than 15</option>
-                            <option value="15-25">15-25</option>
-                            <option value=">25">More than 25</option>
+                            <option value="<15">Less than 15 ft</option>
+                            <option value="15-25">15-25 ft</option>
+                            <option value=">25">More than 25 ft</option>
                         </select>
                     </div>
                     <div class="filter-item">
-                        <label for="depth">Depth (feet)
-                            <span class="tooltip">ⓘ<span class="tooltip-text">Minimum stage depth needed</span></span>
+                        <label for="depth">Depth (ft)
+                            <span class="tooltip">ⓘ<span class="tooltip-text">Minimum stage depth needed in feet</span></span>
                         </label>
                         <select id="depth">
                             <option value="">Any</option>
-                            <option value="<20">Less than 20</option>
-                            <option value="20-35">20-35</option>
-                            <option value=">35">More than 35</option>
+                            <option value="<=75">75 ft or less (Indoor Range)</option>
+                            <option value="<20">Less than 20 ft</option>
+                            <option value="20-35">20-35 ft</option>
+                            <option value=">35">More than 35 ft</option>
                         </select>
                     </div>
                     <div class="filter-item">
@@ -450,7 +491,7 @@
                         </select>
                     </div>
                     <div class="filter-item">
-                        <label for="stageStyle">Stage Style (Movement)</label>
+                        <label for="stageStyle">Stage Style (Tactical)</label>
                         <select id="stageStyle">
                             <option value="">Any</option>
                             <option value="YES">Yes</option>
@@ -591,8 +632,8 @@
                     <th data-sort="hasBarricade">Barricade</th>
                     <th data-sort="mandatoryReload">Reload</th>
                     <th data-sort="hasShoWho">SHO/WHO</th>
-                    <th data-sort="width">Width</th>
-                    <th data-sort="depth">Depth</th>
+                    <th data-sort="width">Width (ft)</th>
+                    <th data-sort="depth">Depth (ft)</th>
                 </tr>
             </thead>
             <tbody>
