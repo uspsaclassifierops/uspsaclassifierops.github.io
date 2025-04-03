@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -494,7 +494,7 @@
                         </select>
                     </div>
                     <div class="filter-item">
-                        <label for="stageStyle">Stage Style (Tactical)</label>
+                        <label for="stageStyle">Stage Style (Movement)</label>
                         <select id="stageStyle">
                             <option value="">Any</option>
                             <option value="YES">Yes</option>
@@ -647,7 +647,40 @@
 
     <script src="classifiers.js"></script>
     <script>
+        // Theme switcher functionality
         document.addEventListener('DOMContentLoaded', function() {
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+            
+            // Initialize theme based on localStorage or system preference
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                document.documentElement.setAttribute('data-theme', savedTheme);
+                updateThemeButton(savedTheme);
+            } else if (prefersDarkScheme.matches) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                updateThemeButton('dark');
+            }
+            
+            // Theme toggle button click handler
+            themeToggleBtn.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeButton(newTheme);
+            });
+            
+            function updateThemeButton(theme) {
+                if (theme === 'dark') {
+                    themeToggleBtn.innerHTML = '<i id="theme-icon">☀️</i> Light Mode';
+                } else {
+                    themeToggleBtn.innerHTML = '<i id="theme-icon">🌙</i> Dark Mode';
+                }
+            }
+            
+            // Classifier filtering functionality
             const tableBody = document.querySelector('#classifierTable tbody');
             const applyFiltersBtn = document.getElementById('applyFilters');
             const resetFiltersBtn = document.getElementById('resetFilters');
