@@ -3,282 +3,596 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Classifier Library</title>
+    <title>USPSA Classifier Library</title>
     <style>
+        :root {
+            --primary-color: #294c85;
+            --secondary-color: #e63946;
+            --light-gray: #f8f9fa;
+            --medium-gray: #e9ecef;
+            --dark-gray: #495057;
+            --success-color: #40916c;
+            --border-color: #dee2e6;
+            --hover-color: #f0f5ff;
+        }
+        
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
             color: #333;
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
+            background-color: #fcfcfc;
         }
+        
+        h1, h2, h3 {
+            color: var(--primary-color);
+        }
+        
         h1 {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--secondary-color);
         }
-        .filters {
-            background: #f5f5f5;
-            padding: 20px;
-            border-radius: 5px;
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 20px;
         }
+        
+        .header-container h1 {
+            margin: 0;
+            border: none;
+        }
+        
+        .filters {
+            background: var(--light-gray);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .filter-section {
+            margin-bottom: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        
+        .filter-header {
+            background-color: var(--medium-gray);
+            padding: 10px 15px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+        
+        .filter-header h3 {
+            margin: 0;
+            font-size: 16px;
+        }
+        
+        .filter-content {
+            padding: 15px;
+            background-color: white;
+            display: none;
+        }
+        
+        .filter-content.active {
+            display: block;
+        }
+        
         .filter-group {
             display: flex;
             flex-wrap: wrap;
             gap: 15px;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
+        
         .filter-item {
-            min-width: 150px;
+            flex: 1;
+            min-width: 180px;
         }
+        
         label {
             display: block;
             margin-bottom: 5px;
-            font-weight: bold;
+            font-weight: 500;
+            font-size: 14px;
         }
+        
         select, input {
             width: 100%;
-            padding: 8px;
+            padding: 8px 10px;
             border-radius: 4px;
-            border: 1px solid #ddd;
+            border: 1px solid var(--border-color);
+            font-size: 14px;
         }
+        
+        select:hover, input:hover {
+            border-color: var(--primary-color);
+        }
+        
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(41, 76, 133, 0.2);
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
         button {
-            background: #4CAF50;
-            color: white;
-            border: none;
             padding: 10px 15px;
             border-radius: 4px;
             cursor: pointer;
-            margin-right: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            border: none;
+            transition: all 0.2s;
         }
-        button:hover {
-            background: #388E3C;
+        
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
         }
-        .button-group {
-            margin-top: 20px;
+        
+        .btn-primary:hover {
+            background: #1e3a66;
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
+        
+        .btn-secondary {
+            background: var(--medium-gray);
+            color: var(--dark-gray);
         }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 12px;
-            text-align: left;
+        
+        .btn-secondary:hover {
+            background: #dce0e3;
         }
-        th {
-            background-color: #f2f2f2;
-            position: sticky;
-            top: 0;
+        
+        .active-filters {
+            margin: 15px 0;
+            padding: 10px;
+            background-color: #f0f5ff;
+            border-radius: 6px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            min-height: 40px;
+            align-items: center;
+        }
+        
+        .filter-tag {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .remove-filter {
+            margin-left: 6px;
+            font-size: 16px;
             cursor: pointer;
         }
-        th:hover {
-            background-color: #e6e6e6;
-        }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-        .no-results {
-            text-align: center;
-            padding: 20px;
+        
+        .no-filters {
             font-style: italic;
-            color: #666;
+            color: var(--dark-gray);
         }
+        
+        .result-count {
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+        
         .table-container {
             max-height: 600px;
             overflow-y: auto;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
-        .highlighted {
-            background-color: #ffeb3b !important;
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            text-align: left;
+            font-size: 14px;
+        }
+        
+        th {
+            background-color: var(--primary-color);
+            color: white;
+            position: sticky;
+            top: 0;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        
+        th:hover {
+            background-color: #1e3a66;
+        }
+        
+        tr:nth-child(even) {
+            background-color: var(--light-gray);
+        }
+        
+        tr:hover {
+            background-color: var(--hover-color);
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 30px;
+            font-style: italic;
+            color: var(--dark-gray);
+        }
+        
+        .sort-icon {
+            margin-left: 5px;
+        }
+        
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            margin-left: 5px;
+            font-size: 12px;
+            color: var(--primary-color);
+            cursor: help;
+        }
+        
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--dark-gray);
+            color: white;
+            text-align: center;
+            border-radius: 4px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 12px;
+            font-weight: normal;
+        }
+        
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        @media (max-width: 768px) {
+            .filter-item {
+                min-width: 100%;
+            }
+            
+            .header-container {
+                flex-direction: column;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>Classifier Library</h1>
+    <div class="header-container">
+        <h1>USPSA Classifier Library</h1>
+    </div>
     
     <div class="filters">
-        <h2>Filters</h2>
-        
-        <div class="filter-group">
-            <div class="filter-item">
-                <label for="indoor">Indoor</label>
-                <select id="indoor">
-                    <option value="">Any</option>
-                    <option value="YES">Yes</option>
-                    <option value="NO">No</option>
-                </select>
+        <div class="filter-section">
+            <div class="filter-header" data-section="quick-search">
+                <h3>Quick Search</h3>
+                <span class="toggle-icon">▼</span>
             </div>
-            
-            <div class="filter-item">
-                <label for="indoorNoSteel">Indoor & No Steel</label>
-                <select id="indoorNoSteel">
-                    <option value="">Any</option>
-                    <option value="YES">Yes</option>
-                    <option value="NO">No</option>
-                </select>
-            </div>
-            
-            <div class="filter-item">
-                <label for="backBermOnly">Back Berm Only</label>
-                <select id="backBermOnly">
-                    <option value="">Any</option>
-                    <option value="YES">Yes</option>
-                    <option value="NO">No</option>
-                </select>
-            </div>
-            
-            <div class="filter-item">
-                <label for="tenRoundsOrLess">10 Rounds or Less</label>
-                <select id="tenRoundsOrLess">
-                    <option value="">Any</option>
-                    <option value="YES">Yes</option>
-                    <option value="NO">No</option>
-                </select>
-            </div>
-            
-            <div class="filter-item">
-                <label for="banState">Ban State</label>
-                <select id="banState">
-                    <option value="">Any</option>
-                    <option value="YES">Yes</option>
-                    <option value="NO">No</option>
-                </select>
+            <div id="quick-search" class="filter-content active">
+                <div class="filter-group">
+                    <div class="filter-item">
+                        <label for="stageSearch">Search by Name or ID</label>
+                        <input type="text" id="stageSearch" placeholder="Enter stage name or ID...">
+                    </div>
+                </div>
             </div>
         </div>
         
-        <div class="filter-group">
-            <div class="filter-item">
-                <label for="roundCount">Round Count</label>
-                <select id="roundCount">
-                    <option value="">Any</option>
-                    <option value="<10">Less than 10</option>
-                    <option value="10-15">10-15</option>
-                    <option value="16-20">16-20</option>
-                    <option value=">20">More than 20</option>
-                </select>
+        <div class="filter-section">
+            <div class="filter-header" data-section="basic-info">
+                <h3>Basic Information</h3>
+                <span class="toggle-icon">▼</span>
             </div>
-            
-            <div class="filter-item">
-                <label for="mandatoryReload">Mandatory Reload</label>
-                <select id="mandatoryReload">
-                    <option value="">Any</option>
-                    <option value="YES">Yes</option>
-                    <option value="NO">No</option>
-                </select>
-            </div>
-            
-            <div class="filter-item">
-                <label for="standAndDeliver">Stand and Deliver</label>
-                <select id="standAndDeliver">
-                    <option value="">Any</option>
-                    <option value="YES">Yes</option>
-                    <option value="NO">No</option>
-                </select>
-            </div>
-            
-            <div class="filter-item">
-                <label for="boxToBox">Box to Box</label>
-                <select id="boxToBox">
-                    <option value="">Any</option>
-                    <option value="YES">Yes</option>
-                    <option value="NO">No</option>
-                </select>
-            </div>
-            
-            <div class="filter-item">
-                <label for="hasShoWho">Has SHO / WHO</label>
-                <select id="hasShoWho">
-                    <option value="">Any</option>
-                    <option value="YES">Yes</option>
-                    <option value="NO">No</option>
-                </select>
+            <div id="basic-info" class="filter-content">
+                <div class="filter-group">
+                    <div class="filter-item">
+                        <label for="scoringType">Scoring Type</label>
+                        <select id="scoringType">
+                            <option value="">Any</option>
+                            <option value="COMSTOCK">Comstock</option>
+                            <option value="VIRGINIA">Virginia</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label for="roundCount">Round Count</label>
+                        <select id="roundCount">
+                            <option value="">Any</option>
+                            <option value="<10">Less than 10</option>
+                            <option value="10-15">10-15</option>
+                            <option value="16-20">16-20</option>
+                            <option value=">20">More than 20</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label for="stringCount">String Count</label>
+                        <select id="stringCount">
+                            <option value="">Any</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3+</option>
+                        </select>
+                    </div>
+                </div>
             </div>
         </div>
         
-        <div class="filter-group">
-            <div class="filter-item">
-                <label for="upRangeStart">Up Range Start</label>
-                <select id="upRangeStart">
-                    <option value="">Any</option>
-                    <option value="YES">Yes</option>
-                    <option value="NO">No</option>
-                </select>
+        <div class="filter-section">
+            <div class="filter-header" data-section="physical">
+                <h3>Physical Requirements</h3>
+                <span class="toggle-icon">▲</span>
             </div>
-            
-            <div class="filter-item">
-                <label for="seatedStart">Seated Start</label>
-                <select id="seatedStart">
-                    <option value="">Any</option>
-                    <option value="YES">Yes</option>
-                    <option value="NO">No</option>
-                </select>
-            </div>
-            
-            <div class="filter-item">
-                <label for="hasBarricade">Has Barricade</label>
-                <select id="hasBarricade">
-                    <option value="">Any</option>
-                    <option value="YES">Yes</option>
-                    <option value="NO">No</option>
-                </select>
-            </div>
-            
-            <div class="filter-item">
-                <label for="hasSteel">Has Steel</label>
-                <select id="hasSteel">
-                    <option value="">Any</option>
-                    <option value="YES">Yes</option>
-                    <option value="NO">No</option>
-                </select>
-            </div>
-            
-            <div class="filter-item">
-                <label for="scoringType">Scoring Type</label>
-                <select id="scoringType">
-                    <option value="">Any</option>
-                    <option value="COMSTOCK">Comstock</option>
-                    <option value="VIRGINIA">Virginia</option>
-                    <!-- Add other scoring types as needed -->
-                </select>
+            <div id="physical" class="filter-content">
+                <div class="filter-group">
+                    <div class="filter-item">
+                        <label for="indoor">Indoor</label>
+                        <select id="indoor">
+                            <option value="">Any</option>
+                            <option value="YES">Yes</option>
+                            <option value="NO">No</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label for="indoorNoSteel">Indoor & No Steel</label>
+                        <select id="indoorNoSteel">
+                            <option value="">Any</option>
+                            <option value="YES">Yes</option>
+                            <option value="NO">No</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label for="backBermOnly">Back Berm Only</label>
+                        <select id="backBermOnly">
+                            <option value="">Any</option>
+                            <option value="YES">Yes</option>
+                            <option value="NO">No</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <div class="filter-item">
+                        <label for="width">Width (feet)
+                            <span class="tooltip">ⓘ<span class="tooltip-text">Minimum stage width needed</span></span>
+                        </label>
+                        <select id="width">
+                            <option value="">Any</option>
+                            <option value="<15">Less than 15</option>
+                            <option value="15-25">15-25</option>
+                            <option value=">25">More than 25</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label for="depth">Depth (feet)
+                            <span class="tooltip">ⓘ<span class="tooltip-text">Minimum stage depth needed</span></span>
+                        </label>
+                        <select id="depth">
+                            <option value="">Any</option>
+                            <option value="<20">Less than 20</option>
+                            <option value="20-35">20-35</option>
+                            <option value=">35">More than 35</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label for="wallCount">Wall Count</label>
+                        <select id="wallCount">
+                            <option value="">Any</option>
+                            <option value="0">0</option>
+                            <option value="1-3">1-3</option>
+                            <option value=">3">More than 3</option>
+                        </select>
+                    </div>
+                </div>
             </div>
         </div>
         
-        <div class="filter-group">
-            <div class="filter-item">
-                <label for="stageSearch">Search by Name/ID</label>
-                <input type="text" id="stageSearch" placeholder="Stage name or ID...">
+        <div class="filter-section">
+            <div class="filter-header" data-section="stage-elements">
+                <h3>Stage Elements</h3>
+                <span class="toggle-icon">▲</span>
+            </div>
+            <div id="stage-elements" class="filter-content">
+                <div class="filter-group">
+                    <div class="filter-item">
+                        <label for="hasBarricade">Has Barricade</label>
+                        <select id="hasBarricade">
+                            <option value="">Any</option>
+                            <option value="YES">Yes</option>
+                            <option value="NO">No</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label for="hasSteel">Has Steel</label>
+                        <select id="hasSteel">
+                            <option value="">Any</option>
+                            <option value="YES">Yes</option>
+                            <option value="NO">No</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label for="stageStyle">Stage Style (Tactical)</label>
+                        <select id="stageStyle">
+                            <option value="">Any</option>
+                            <option value="YES">Yes</option>
+                            <option value="NO">No</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="filter-section">
+            <div class="filter-header" data-section="shooting-requirements">
+                <h3>Shooting Requirements</h3>
+                <span class="toggle-icon">▲</span>
+            </div>
+            <div id="shooting-requirements" class="filter-content">
+                <div class="filter-group">
+                    <div class="filter-item">
+                        <label for="mandatoryReload">Mandatory Reload</label>
+                        <select id="mandatoryReload">
+                            <option value="">Any</option>
+                            <option value="YES">Yes</option>
+                            <option value="NO">No</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label for="standAndDeliver">Stand and Deliver</label>
+                        <select id="standAndDeliver">
+                            <option value="">Any</option>
+                            <option value="YES">Yes</option>
+                            <option value="NO">No</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label for="boxToBox">Box to Box</label>
+                        <select id="boxToBox">
+                            <option value="">Any</option>
+                            <option value="YES">Yes</option>
+                            <option value="NO">No</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <div class="filter-item">
+                        <label for="hasShoWho">Strong/Weak Hand Only</label>
+                        <select id="hasShoWho">
+                            <option value="">Any</option>
+                            <option value="YES">Yes</option>
+                            <option value="NO">No</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label for="tenRoundsOrLess">10 Rounds or Less</label>
+                        <select id="tenRoundsOrLess">
+                            <option value="">Any</option>
+                            <option value="YES">Yes</option>
+                            <option value="NO">No</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="filter-section">
+            <div class="filter-header" data-section="start-conditions">
+                <h3>Start Conditions</h3>
+                <span class="toggle-icon">▲</span>
+            </div>
+            <div id="start-conditions" class="filter-content">
+                <div class="filter-group">
+                    <div class="filter-item">
+                        <label for="upRangeStart">Up Range Start</label>
+                        <select id="upRangeStart">
+                            <option value="">Any</option>
+                            <option value="YES">Yes</option>
+                            <option value="NO">No</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label for="seatedStart">Seated Start</label>
+                        <select id="seatedStart">
+                            <option value="">Any</option>
+                            <option value="YES">Yes</option>
+                            <option value="NO">No</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="filter-section">
+            <div class="filter-header" data-section="administrative">
+                <h3>Administrative</h3>
+                <span class="toggle-icon">▲</span>
+            </div>
+            <div id="administrative" class="filter-content">
+                <div class="filter-group">
+                    <div class="filter-item">
+                        <label for="banState">Ban State Compliant
+                            <span class="tooltip">ⓘ<span class="tooltip-text">Complies with firearms restrictions in certain states</span></span>
+                        </label>
+                        <select id="banState">
+                            <option value="">Any</option>
+                            <option value="YES">Yes</option>
+                            <option value="NO">No</option>
+                        </select>
+                    </div>
+                </div>
             </div>
         </div>
         
         <div class="button-group">
-            <button id="applyFilters">Apply Filters</button>
-            <button id="resetFilters">Reset Filters</button>
+            <button id="applyFilters" class="btn-primary">Apply Filters</button>
+            <button id="resetFilters" class="btn-secondary">Reset All Filters</button>
+            <button id="expandAll" class="btn-secondary">Expand All</button>
+            <button id="collapseAll" class="btn-secondary">Collapse All</button>
         </div>
     </div>
+    
+    <div class="active-filters">
+        <span class="no-filters">No active filters</span>
+        <!-- Active filters will be added here dynamically -->
+    </div>
+    
+    <div class="result-count">Showing all 55 classifiers</div>
     
     <div class="table-container">
         <table id="classifierTable">
             <thead>
                 <tr>
+                    <th data-sort="stageIdentifier">ID <span class="sort-icon">▼</span></th>
                     <th data-sort="stageName">Stage Name</th>
-                    <th data-sort="stageIdentifier">Stage ID</th>
-                    <th data-sort="indoor">Indoor</th>
-                    <th data-sort="indoorNoSteel">Indoor No Steel</th>
-                    <th data-sort="banState">Ban State</th>
-                    <th data-sort="roundCount">Round Count</th>
-                    <th data-sort="mandatoryReload">Mandatory Reload</th>
-                    <th data-sort="standAndDeliver">Stand and Deliver</th>
-                    <th data-sort="hasShoWho">SHO/WHO</th>
-                    <th data-sort="hasBarricade">Barricade</th>
-                    <th data-sort="hasSteel">Steel</th>
+                    <th data-sort="roundCount">Rounds</th>
+                    <th data-sort="stringCount">Strings</th>
                     <th data-sort="scoringType">Scoring</th>
+                    <th data-sort="indoor">Indoor</th>
+                    <th data-sort="hasSteel">Steel</th>
+                    <th data-sort="hasBarricade">Barricade</th>
+                    <th data-sort="mandatoryReload">Reload</th>
+                    <th data-sort="hasShoWho">SHO/WHO</th>
+                    <th data-sort="width">Width</th>
+                    <th data-sort="depth">Depth</th>
                 </tr>
             </thead>
             <tbody>
@@ -289,25 +603,76 @@
 
     <script src="classifiers.js"></script>
     <script>
-        // Core functionality
         document.addEventListener('DOMContentLoaded', function() {
             const tableBody = document.querySelector('#classifierTable tbody');
             const applyFiltersBtn = document.getElementById('applyFilters');
             const resetFiltersBtn = document.getElementById('resetFilters');
+            const expandAllBtn = document.getElementById('expandAll');
+            const collapseAllBtn = document.getElementById('collapseAll');
             const tableHeaders = document.querySelectorAll('th[data-sort]');
+            const activeFiltersContainer = document.querySelector('.active-filters');
+            const resultCountElement = document.querySelector('.result-count');
             
             let filteredData = [...classifierData];
             let sortConfig = {
-                column: 'stageName',
+                column: 'stageIdentifier',
                 direction: 'asc'
             };
+            let activeFilters = {};
             
             // Initial render
             renderTable(filteredData);
             
+            // Toggle section visibility
+            function toggleSection(sectionId) {
+                const section = document.getElementById(sectionId);
+                const header = section.previousElementSibling;
+                const icon = header.querySelector('.toggle-icon');
+                
+                section.classList.toggle('active');
+                icon.textContent = section.classList.contains('active') ? '▼' : '▲';
+            }
+            
+            // Toggle section function
+            function toggleSection(sectionId) {
+                const section = document.getElementById(sectionId);
+                const header = section.previousElementSibling;
+                const icon = header.querySelector('.toggle-icon');
+                
+                section.classList.toggle('active');
+                icon.textContent = section.classList.contains('active') ? '▼' : '▲';
+            }
+            
+            // Initialize section toggling
+            document.querySelectorAll('.filter-header').forEach(header => {
+                header.addEventListener('click', function() {
+                    const sectionId = this.getAttribute('data-section');
+                    toggleSection(sectionId);
+                });
+            });
+            
+            // Expand all sections
+            expandAllBtn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-content').forEach(section => {
+                    section.classList.add('active');
+                    section.previousElementSibling.querySelector('.toggle-icon').textContent = '▼';
+                });
+            });
+            
+            // Collapse all sections
+            collapseAllBtn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-content').forEach(section => {
+                    if (section.id !== 'quick-search') { // Keep quick search open
+                        section.classList.remove('active');
+                        section.previousElementSibling.querySelector('.toggle-icon').textContent = '▲';
+                    }
+                });
+            });
+            
             // Apply filters button click
             applyFiltersBtn.addEventListener('click', function() {
                 applyFilters();
+                updateActiveFilters();
             });
             
             // Reset filters button click
@@ -316,6 +681,8 @@
                     el.value = '';
                 });
                 filteredData = [...classifierData];
+                activeFilters = {};
+                updateActiveFilters();
                 renderTable(filteredData);
             });
             
@@ -324,6 +691,12 @@
                 header.addEventListener('click', function() {
                     const column = this.dataset.sort;
                     
+                    // Reset all sort icons
+                    tableHeaders.forEach(th => {
+                        const icon = th.querySelector('.sort-icon');
+                        if (icon) icon.textContent = '';
+                    });
+                    
                     if (sortConfig.column === column) {
                         sortConfig.direction = sortConfig.direction === 'asc' ? 'desc' : 'asc';
                     } else {
@@ -331,12 +704,90 @@
                         sortConfig.direction = 'asc';
                     }
                     
+                    // Update the sort icon
+                    const icon = this.querySelector('.sort-icon');
+                    if (icon) {
+                        icon.textContent = sortConfig.direction === 'asc' ? '▼' : '▲';
+                    }
+                    
                     sortTable(column, sortConfig.direction);
                 });
             });
             
+            // Update active filters display
+            function updateActiveFilters() {
+                activeFiltersContainer.innerHTML = '';
+                
+                const filterCount = Object.keys(activeFilters).length;
+                
+                if (filterCount === 0) {
+                    const noFilters = document.createElement('span');
+                    noFilters.className = 'no-filters';
+                    noFilters.textContent = 'No active filters';
+                    activeFiltersContainer.appendChild(noFilters);
+                    return;
+                }
+                
+                for (const [key, value] of Object.entries(activeFilters)) {
+                    const filterTag = document.createElement('div');
+                    filterTag.className = 'filter-tag';
+                    
+                    const filterLabel = document.createElement('span');
+                    filterLabel.textContent = `${getFriendlyName(key)}: ${value}`;
+                    
+                    const removeBtn = document.createElement('span');
+                    removeBtn.className = 'remove-filter';
+                    removeBtn.textContent = '×';
+                    removeBtn.addEventListener('click', function() {
+                        // Clear the corresponding filter
+                        const element = document.getElementById(key);
+                        if (element) {
+                            element.value = '';
+                            delete activeFilters[key];
+                            updateActiveFilters();
+                            applyFilters();
+                        }
+                    });
+                    
+                    filterTag.appendChild(filterLabel);
+                    filterTag.appendChild(removeBtn);
+                    activeFiltersContainer.appendChild(filterTag);
+                }
+            }
+            
+            // Get friendly name for filter keys
+            function getFriendlyName(key) {
+                const nameMap = {
+                    'stageName': 'Stage Name',
+                    'stageIdentifier': 'ID',
+                    'indoor': 'Indoor',
+                    'indoorNoSteel': 'Indoor No Steel',
+                    'backBermOnly': 'Back Berm Only',
+                    'tenRoundsOrLess': '≤10 Rounds',
+                    'banState': 'Ban State',
+                    'roundCount': 'Round Count',
+                    'mandatoryReload': 'Mandatory Reload',
+                    'standAndDeliver': 'Stand & Deliver',
+                    'boxToBox': 'Box to Box',
+                    'stageStyle': 'Stage Style',
+                    'hasShoWho': 'SHO/WHO',
+                    'upRangeStart': 'Up Range Start',
+                    'seatedStart': 'Seated Start',
+                    'wallCount': 'Wall Count',
+                    'hasBarricade': 'Barricade',
+                    'hasSteel': 'Steel',
+                    'stringCount': 'String Count',
+                    'scoringType': 'Scoring',
+                    'width': 'Width',
+                    'depth': 'Depth'
+                };
+                
+                return nameMap[key] || key;
+            }
+            
             // Apply filters function
             function applyFilters() {
+                // Get all filter values
                 const indoor = document.getElementById('indoor').value;
                 const indoorNoSteel = document.getElementById('indoorNoSteel').value;
                 const backBermOnly = document.getElementById('backBermOnly').value;
@@ -352,7 +803,38 @@
                 const hasBarricade = document.getElementById('hasBarricade').value;
                 const hasSteel = document.getElementById('hasSteel').value;
                 const scoringType = document.getElementById('scoringType').value;
+                const stringCountFilter = document.getElementById('stringCount').value;
+                const widthFilter = document.getElementById('width').value;
+                const depthFilter = document.getElementById('depth').value;
+                const wallCountFilter = document.getElementById('wallCount').value;
+                const stageStyle = document.getElementById('stageStyle').value;
                 const search = document.getElementById('stageSearch').value.toLowerCase();
+                
+                // Reset active filters
+                activeFilters = {};
+                
+                // Add to active filters if value is set
+                if (indoor) activeFilters.indoor = indoor;
+                if (indoorNoSteel) activeFilters.indoorNoSteel = indoorNoSteel;
+                if (backBermOnly) activeFilters.backBermOnly = backBermOnly;
+                if (tenRoundsOrLess) activeFilters.tenRoundsOrLess = tenRoundsOrLess;
+                if (banState) activeFilters.banState = banState;
+                if (roundCountFilter) activeFilters.roundCount = roundCountFilter;
+                if (mandatoryReload) activeFilters.mandatoryReload = mandatoryReload;
+                if (standAndDeliver) activeFilters.standAndDeliver = standAndDeliver;
+                if (boxToBox) activeFilters.boxToBox = boxToBox;
+                if (hasShoWho) activeFilters.hasShoWho = hasShoWho;
+                if (upRangeStart) activeFilters.upRangeStart = upRangeStart;
+                if (seatedStart) activeFilters.seatedStart = seatedStart;
+                if (hasBarricade) activeFilters.hasBarricade = hasBarricade;
+                if (hasSteel) activeFilters.hasSteel = hasSteel;
+                if (scoringType) activeFilters.scoringType = scoringType;
+                if (stringCountFilter) activeFilters.stringCount = stringCountFilter;
+                if (widthFilter) activeFilters.width = widthFilter;
+                if (depthFilter) activeFilters.depth = depthFilter;
+                if (wallCountFilter) activeFilters.wallCount = wallCountFilter;
+                if (stageStyle) activeFilters.stageStyle = stageStyle;
+                if (search) activeFilters.search = search;
                 
                 filteredData = classifierData.filter(stage => {
                     // Filter by boolean values
@@ -370,6 +852,7 @@
                     if (hasBarricade && stage.hasBarricade !== hasBarricade) return false;
                     if (hasSteel && stage.hasSteel !== hasSteel) return false;
                     if (scoringType && stage.scoringType !== scoringType) return false;
+                    if (stageStyle && stage.stageStyle !== stageStyle) return false;
                     
                     // Filter by round count
                     if (roundCountFilter) {
@@ -378,6 +861,38 @@
                         if (roundCountFilter === '10-15' && (count < 10 || count > 15)) return false;
                         if (roundCountFilter === '16-20' && (count < 16 || count > 20)) return false;
                         if (roundCountFilter === '>20' && count <= 20) return false;
+                    }
+                    
+                    // Filter by string count
+                    if (stringCountFilter) {
+                        const count = stage.stringCount;
+                        if (stringCountFilter === '1' && count !== 1) return false;
+                        if (stringCountFilter === '2' && count !== 2) return false;
+                        if (stringCountFilter === '3' && count < 3) return false;
+                    }
+                    
+                    // Filter by width
+                    if (widthFilter) {
+                        const width = stage.width;
+                        if (widthFilter === '<15' && width >= 15) return false;
+                        if (widthFilter === '15-25' && (width < 15 || width > 25)) return false;
+                        if (widthFilter === '>25' && width <= 25) return false;
+                    }
+                    
+                    // Filter by depth
+                    if (depthFilter) {
+                        const depth = stage.depth;
+                        if (depthFilter === '<20' && depth >= 20) return false;
+                        if (depthFilter === '20-35' && (depth < 20 || depth > 35)) return false;
+                        if (depthFilter === '>35' && depth <= 35) return false;
+                    }
+                    
+                    // Filter by wall count
+                    if (wallCountFilter) {
+                        const count = stage.wallCount;
+                        if (wallCountFilter === '0' && count !== 0) return false;
+                        if (wallCountFilter === '1-3' && (count < 1 || count > 3)) return false;
+                        if (wallCountFilter === '>3' && count <= 3) return false;
                     }
                     
                     // Filter by search text
@@ -389,6 +904,9 @@
                     
                     return true;
                 });
+                
+                // Update result count
+                resultCountElement.textContent = `Showing ${filteredData.length} of ${classifierData.length} classifiers`;
                 
                 // Re-sort and render the filtered data
                 sortTable(sortConfig.column, sortConfig.direction);
@@ -427,7 +945,7 @@
                     const cell = document.createElement('td');
                     cell.colSpan = 12;
                     cell.className = 'no-results';
-                    cell.textContent = 'No matching stages found';
+                    cell.textContent = 'No matching classifiers found';
                     row.appendChild(cell);
                     tableBody.appendChild(row);
                     return;
@@ -436,19 +954,19 @@
                 data.forEach(stage => {
                     const row = document.createElement('tr');
                     
-                    // Add cells
-                    addCell(row, stage.stageName);
+                    // Add cells with all relevant data
                     addCell(row, stage.stageIdentifier);
-                    addCell(row, stage.indoor);
-                    addCell(row, stage.indoorNoSteel);
-                    addCell(row, stage.banState);
+                    addCell(row, stage.stageName);
                     addCell(row, stage.roundCount);
-                    addCell(row, stage.mandatoryReload);
-                    addCell(row, stage.standAndDeliver);
-                    addCell(row, stage.hasShoWho);
-                    addCell(row, stage.hasBarricade);
-                    addCell(row, stage.hasSteel);
+                    addCell(row, stage.stringCount);
                     addCell(row, stage.scoringType);
+                    addCell(row, stage.indoor);
+                    addCell(row, stage.hasSteel);
+                    addCell(row, stage.hasBarricade);
+                    addCell(row, stage.mandatoryReload);
+                    addCell(row, stage.hasShoWho);
+                    addCell(row, stage.width);
+                    addCell(row, stage.depth);
                     
                     tableBody.appendChild(row);
                 });
@@ -465,8 +983,11 @@
             document.getElementById('stageSearch').addEventListener('keyup', function(event) {
                 if (event.key === 'Enter') {
                     applyFilters();
+                    updateActiveFilters();
                 }
             });
+            
+            // No longer need to make toggleSection global
         });
     </script>
 </body>
